@@ -19,33 +19,61 @@ This is **not** a "lift and shift." This is a refactor and rewrite. We will be c
 
 ---
 
-## 2. New Project Setup
+## 2. New Project Setup (Start Here)
 
-We will start with a fresh Astro project. **Do not** clone the old Nuxt project and try to refactor it.
+We will start with a fresh Astro project. **Do not** clone the old Nuxt project.
 
-### Step 1: Create the Astro Project
+### Step 2.1: Pre-Flight Environment Check (CRITICAL)
 
-In your terminal, create the new project.
+The "command failed" errors are almost always an environment problem. Before you begin, please run these checks in your terminal.
+
+**1. Check Node.js Version:**
+Astro requires a modern version of Node.js.
 
 ```bash
+node -v
+FAIL: If you see v16.x.x or lower.
+
+PASS: You must have v18.17.1 or newer (or v20.3.0+).
+
+ACTION: If you are on an old version, you must update Node.js (using nvm or by reinstalling) before proceeding. This is the most likely blocker.
+
+2. Clean Your Caches: If you have a passing Node.js version but still get errors, your cache may be corrupt.
+
+Bash
+
+npm cache clean --force
+3. A Note on axios: You do not need axios. For any API calls, please use the modern, built-in fetch API, which is native to Astro and Node.js.
+
+Step 2.2: Create the Project & Install the Stack
+If your environment check passed, proceed with these steps one by one. If a command fails, we will know which one.
+
+1. Create the Astro Project: In your terminal, create the new project.
+
+Bash
+
 # Create a new Astro project
 npm create astro@latest [project-name]
-````
-
 Use the following settings in the setup wizard:
 
-  * **Project type:** "Include sample files" (Good for a fresh start)
-  * **TypeScript:** "Strict"
-  * **Install dependencies:** `Yes`
-  * **Initialize Git:** `Yes`
+Project type: "Include sample files"
 
-### Step 2: Install the Full Stack
+TypeScript: "Strict"
 
-This is the most critical step. Use the `astro add` commands to ensure all configurations are set up perfectly.
+Install dependencies: Yes
 
-```bash
-# Navigate into your new project
+Initialize Git: Yes
+
+2. Navigate into the Project:
+
+Bash
+
 cd [project-name]
+This is important! Run all an_dd_ commands from inside the new project directory.
+
+3. Add Integrations (One at a Time): Run these commands individually to isolate any failures.
+
+Bash
 
 # 1. Add Tailwind CSS for styling
 npx astro add tailwind
@@ -55,7 +83,37 @@ npx astro add alpinejs
 
 # 3. Add Astro Icon for all SVG icons
 npx astro add astro-icon
-```
+
+# 4. Add Vue (for temporary component migration)
+npx astro add vue
+4. If Any astro add Command Fails: If you get an "internal error" here, do a "full reset":
+
+Delete the node_modules folder.
+
+Delete the package-lock.json file.
+
+Run npm install
+
+Try the failed npx astro add ... command again.
+
+5. Finalize Installation: Once all astro add commands have succeeded, run a final install to make sure everything is in sync.
+
+Bash
+
+npm install
+Step 2.3: Configure Netlify
+Create a netlify.toml file in the root of the project. This is all we need for a static build.
+
+Ini, TOML
+
+# netlify.toml
+
+[build]
+  # Astro's build command
+  command = "npm run build"
+
+  # The output folder for the static site
+  publish = "dist"
 
 ### Step 3: Add Vue Integration (As an "Island")
 
